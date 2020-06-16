@@ -1,0 +1,16 @@
+
+version: '3.6'
+services:
+
+   neo4j:
+      image: neo4j:4.0
+      container_name: neo4j
+      environment:
+         - NEO4J_AUTH=none
+         - NEO4J_dbms_security_procedures_unrestricted=gds.*
+      ports:
+         - 7474:7474
+         - 7687:7687
+      volumes:
+         - ./plugins:/var/lib/neo4j/plugins
+         - ./data:/var/lib/neo4j/data
