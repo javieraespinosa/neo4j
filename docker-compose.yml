@@ -3,14 +3,26 @@ version: '3.6'
 services:
 
    neo4j:
-      image: neo4j:4.0
+      image: neo4j:4.3
       container_name: neo4j
       environment:
-         - NEO4J_AUTH=none
-         - NEO4J_dbms_security_procedures_unrestricted=gds.*
+         - NEO4J_AUTH=neo4j/password
+         - NEO4J_dbms_security_procedures_unrestricted=,jwt.security.*,gds.*,apoc.*
       ports:
-         - 7474:7474
-         - 7687:7687
+         - 7473:7473  # HTTPS
+         - 7474:7474  # HTTP
+         - 7687:7687  # BOLT
       volumes:
-         - ./plugins:/var/lib/neo4j/plugins
-         - ./data:/var/lib/neo4j/data
+         - ./data:/data
+         - ./plugins:/plugins
+
+   jupyter:
+      build: .
+      image: neo4j-jupyter
+      container_name: neo4j-jupyter
+      command: jupyter notebook --allow-root
+      user: root
+      ports: 
+         - 8888:8888
+      volumes:
+         - ./jupyter_notebook_config.py:/home/jovyan/.jupyter/jupyter_notebook_config.py
